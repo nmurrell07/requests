@@ -890,7 +890,7 @@ class Response:
             yield pending
 
     @property
-    def content(self):
+    def content(self) -> bytes:
         """Content of the response, in bytes."""
 
         if self._content is False:
