@@ -218,8 +218,18 @@ class HTTPDigestAuth(AuthBase):
         self._thread_local.last_nonce = nonce
 
         # XXX should the partial digests be encoded too?
+        # Handle bytes username/password by decoding as latin-1 (library convention)
+        if isinstance(self.username, bytes):
+            username = self.username.decode("latin-1")
+        else:
+            username = self.username
+        if isinstance(self.password, bytes):
+            password = self.password.decode("latin-1")
+        else:
+            password = self.password
+
         base = (
-            f'username="{self.username}", realm="{realm}", nonce="{nonce}", '
+            f'username="{username}", realm="{realm}", nonce="{nonce}", '
             f'uri="{path}", response="{respdig}"'
         )
         if opaque:
