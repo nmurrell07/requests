@@ -108,6 +108,11 @@ class HTTPDigestAuth(AuthBase):
     """Attaches HTTP Digest Authentication to the given Request object."""
 
     def __init__(self, username, password):
+        # Ensure credentials are strings; if bytes were passed, decode them.
+        if isinstance(username, (bytes, bytearray)):
+            username = username.decode("utf-8")
+        if isinstance(password, (bytes, bytearray)):
+            password = password.decode("utf-8")
         self.username = username
         self.password = password
         # Keep state in per-thread local storage
