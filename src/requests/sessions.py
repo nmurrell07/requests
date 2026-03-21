@@ -766,7 +766,7 @@ class Session(SessionRedirectMixin):
 
             # Look for requests environment configuration
             # and be compatible with cURL.
-            if verify is True or verify is None:
+            if verify is not False:
                 verify = (
                     os.environ.get("REQUESTS_CA_BUNDLE")
                     or os.environ.get("CURL_CA_BUNDLE")
