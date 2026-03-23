@@ -110,12 +110,36 @@ try:
         urllib3.__version__, chardet_version, charset_normalizer_version
     )
 except (AssertionError, ValueError):
-    warnings.warn(
-        f"urllib3 ({urllib3.__version__}) or chardet "
-        f"({chardet_version})/charset_normalizer ({charset_normalizer_version}) "
-        "doesn't match a supported version!",
-        RequestsDependencyWarning,
-    )
+    # Provide a clearer warning message that explains the issue and what to do
+    if chardet_version is not None:
+        warnings.warn(
+            f"urllib3 ({urllib3.__version__}) or chardet "
+            f"({chardet_version})/charset_normalizer ({charset_normalizer_version}) "
+            "doesn't match a supported version! "
+            "Requests uses chardet as an optional dependency. "
+            f"You have chardet=={chardet_version}, but requests supports chardet<6. "
+            "Please install chardet<6 to silence this warning.",
+            RequestsDependencyWarning,
+        )
+    elif charset_normalizer_version is not None:
+        warnings.warn(
+            f"urllib3 ({urllib3.__version__}) or chardet "
+            f"({chardet_version})/charset_normalizer ({charset_normalizer_version}) "
+            "doesn't match a supported version! "
+            "Requests uses charset_normalizer as an optional dependency. "
+            f"You have charset_normalizer=={charset_normalizer_version}, but requests supports charset_normalizer<4. "
+            "Please install charset_normalizer<4 to silence this warning.",
+            RequestsDependencyWarning,
+        )
+    else:
+        warnings.warn(
+            f"urllib3 ({urllib3.__version__}) or chardet "
+            f"({chardet_version})/charset_normalizer ({charset_normalizer_version}) "
+            "doesn't match a supported version! "
+            "Please ensure you have compatible versions installed. "
+            "See https://requests.readthedocs.io/en/latest/user/advanced/#installing-requests",
+            RequestsDependencyWarning,
+        )
 
 # Attempt to enable urllib3's fallback for SNI support
 # if the standard library doesn't support SNI or the
