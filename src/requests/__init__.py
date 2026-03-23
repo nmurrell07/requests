@@ -119,19 +119,32 @@ try:
     )
 except (AssertionError, ValueError) as e:
     # Provide specific information about which dependency has the wrong version
-    if "urllib3" in str(e):
+    if chardet_version and not charset_normalizer_version:
         warnings.warn(
-            f"urllib3 ({urllib3.__version__}) doesn't match a supported version!",
+            f"chardet ({chardet_version}) is an optional dependency for character "
+            f"detection. The requests library supports chardet >= 3.0.2, < 6.0. "
+            f"You can install a compatible version with `pip install 'chardet<6'` or "
+            f"use charset_normalizer instead.",
             RequestsDependencyWarning,
         )
-    elif "chardet" in str(e):
+    elif chardet_version and charset_normalizer_version:
         warnings.warn(
-            f"chardet ({chardet_version}) doesn't match a supported version!",
+            f"chardet ({chardet_version}) is an optional dependency for character "
+            f"detection. The requests library supports chardet >= 3.0.2, < 6.0. "
+            f"Since you have charset_normalizer installed, requests will use that instead. "
+            f"To silence this warning, install a compatible chardet version with "
+            f"`pip install 'chardet<6'` or uninstall chardet.",
             RequestsDependencyWarning,
         )
     elif "charset_normalizer" in str(e):
         warnings.warn(
-            f"charset_normalizer ({charset_normalizer_version}) doesn't match a supported version!",
+            f"charset_normalizer ({charset_normalizer_version}) doesn't match a supported version! "
+            f"The requests library supports charset_normalizer >= 2.0.0, < 4.0.0.",
+            RequestsDependencyWarning,
+        )
+    elif "urllib3" in str(e):
+        warnings.warn(
+            f"urllib3 ({urllib3.__version__}) doesn't match a supported version!",
             RequestsDependencyWarning,
         )
     else:
